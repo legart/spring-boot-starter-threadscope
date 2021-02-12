@@ -16,24 +16,24 @@
 
 package devbury.threadscope;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {IntegrationTest.class, ValueBeanProvider.class})
 @WebAppConfiguration
 @EnableAutoConfiguration
-public class IntegrationTest {
+class IntegrationTest {
 
     @Autowired
     ValueBeanProvider.ValueBean valueBean;
@@ -45,12 +45,12 @@ public class IntegrationTest {
     AsyncConfigurer asyncConfigurer;
 
     @Test
-    public void verifyDefaultExecutor() {
+    void verifyDefaultExecutor() {
         assertEquals(ThreadScopePropagatingScheduler.class, taskExecutor.getClass());
     }
 
     @Test
-    public void verifyDefaultAsyncConfigurer() {
+    void verifyDefaultAsyncConfigurer() {
         assertEquals(SchedulerConfiguration.class, asyncConfigurer.getClass());
         assertEquals(ThreadScopePropagatingScheduler.class, asyncConfigurer.getAsyncExecutor().getClass());
         assertEquals(SimpleAsyncUncaughtExceptionHandler.class, asyncConfigurer.getAsyncUncaughtExceptionHandler()
@@ -58,14 +58,11 @@ public class IntegrationTest {
     }
 
     @Test
-    public void canAccessBeanFromAsync() throws Exception {
+    void canAccessBeanFromAsync() throws Exception {
         valueBean.setValue("ONE");
-        taskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                assertEquals("ONE", valueBean.getValue());
-                valueBean.setValue("TWO");
-            }
+        taskExecutor.execute(() -> {
+            assertEquals("ONE", valueBean.getValue());
+            valueBean.setValue("TWO");
         });
         Thread.sleep(100);
         assertEquals("TWO", valueBean.getValue());

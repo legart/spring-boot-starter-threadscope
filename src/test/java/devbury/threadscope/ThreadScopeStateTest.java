@@ -16,19 +16,19 @@
 
 package devbury.threadscope;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ThreadScopeStateTest implements ObjectFactory<ThreadScopeStateTest> {
+class ThreadScopeStateTest implements ObjectFactory<ThreadScopeStateTest> {
 
     boolean destructionCallbackCalled = false;
 
     @Test
-    public void testFinalize() throws Throwable {
+    void testFinalize() throws Throwable {
         ThreadScopeState victim = new ThreadScopeState();
         victim.addDestructionCallback("bean", new Runnable() {
             @Override

@@ -16,22 +16,22 @@
 
 package devbury.threadscope.integration;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {ServletRequestListenerTest.class, ThreadScopeManagerProvider.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 @ComponentScan
-public class ServletRequestListenerTest {
+class ServletRequestListenerTest {
 
     static boolean requestDestroyedCalled = false;
 
@@ -39,7 +39,7 @@ public class ServletRequestListenerTest {
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void verifyServletRequestListenerRegisteredAndCalled() throws Exception {
+    void verifyServletRequestListenerRegisteredAndCalled() throws Exception {
         testRestTemplate.getForObject("/test", String.class);
         assertTrue(requestDestroyedCalled);
     }
